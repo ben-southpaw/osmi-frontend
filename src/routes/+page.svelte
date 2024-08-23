@@ -1,2 +1,16 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+	import App from '$lib/components/App.svelte';
+</script>
+
+<!-- <div> -->
+<App />
+
+<!-- </div> -->
+
+<style>
+	:global(body) {
+		margin: 0;
+		background-color: #0c0b0e;
+		box-sizing: border-box;
+	}
+</style>
