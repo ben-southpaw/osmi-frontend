@@ -18,7 +18,7 @@
 	$: scrollY, handleScroll();
 
 	onMount(() => {
-		videoSrc = videoDesktop;g
+		videoSrc = videoDesktop;
 		tl = gsap.timeline();
 	});
 
