@@ -33,7 +33,7 @@
 	];
 
 	let options = {
-		threshold: 0.9,
+		threshold: 0.5,
 	};
 
 	let videoX, videoY;
