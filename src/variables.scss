@@ -9,7 +9,7 @@ $main-padding: 2rem;
 $breakpoint-mobile: 375px;
 $breakpoint-small: '(max-width: 899px)';
 $breakpoint-large: 1440px;
-$breakpoint-xlarge: '(min-width: 1680px)';
+$breakpoint-xlarge: '(min-width: 1500px)';
 $screen-width: 100vw;
 
 // //Theme Colours:
@@ -20,9 +20,6 @@ $screen-width: 100vw;
 
 //css vars
 // $mask-size: 80em;
-
-
-
 
 @mixin responsive-scale-single-direction(
 	$scale-min,

@@ -5,10 +5,19 @@
 	import bubble from '$lib/assets/images/bubble-chat-lock.png';
 	import submit from '$lib/assets/images/submit.png';
 	import { fly, fade } from 'svelte/transition';
-	import { coords } from '../store';
+	import desktop from '$lib/assets/videos/desktop.mp4';
+	import { onMount } from 'svelte';
+	import gsap from 'gsap';
+	import { inview } from 'svelte-inview';
+
+	onMount(() => {
+		handleResize();
+	});
 
 	export let scrollY;
 	let destination;
+	let videoSrc = desktop;
+	let videoElement;
 
 	let promptBoxes = [
 		{ copy: 'Does Blobby AI have restrictions or censorship?', logo: bubble },
@@ -23,15 +32,21 @@
 		},
 	];
 
-	$: scrollY, updatedCoords();
+	let options = {
+		threshold: 0.9,
+	};
 
-	let hasUpdated = false;
-	function updatedCoords() {
-		if (hasUpdated) return;
-		let vals = destination && destination.getBoundingClientRect();
-		$coords = vals;
+	let videoX, videoY;
+
+	function handleResize() {
+		let bounds = document.querySelector('.header p').getBoundingClientRect();
+		let boundsVideo = videoElement.getBoundingClientRect();
+		videoX = bounds.x + bounds.width + window.innerWidth * 0.1 - boundsVideo.x;
+		videoY = bounds.y + bounds.height / 2 - boundsVideo.y * 1.2;
 	}
 </script>
+
+<svelte:window on:resize={handleResize} />
 
 <div
 	class="chat-container"
@@ -39,23 +54,54 @@
 		y: '100%',
 		duration: 800,
 	}}
+	use:inview={options}
+	on:inview_enter={() => {
+		gsap.to(videoElement, {
+			duration: 0.8,
+			scale: 1,
+			y: 0,
+			x: 0,
+		});
+	}}
+	on:inview_leave={(event) => {
+		const { inView, entry, scrollDirection, observer, node } = event.detail;
+		if (scrollDirection.vertical === 'down') {
+			gsap.to(videoElement, {
+				duration: 1,
+				scale: 4,
+				y: videoY,
+				x: videoX * 1.15,
+			});
+		}
+	}}
 	class:bg={scrollY > 0}
 >
 	<div class="chat-content">
 		<div class="row-one">
-			<div class="canvas-destination" bind:this={destination}></div>
-			<div class="chat-container">
-				<h2 style="opacity: 0.6;">Hi I'm Blobby</h2>
-				<h2>How can I help you?</h2>
+			<div class="canvas-destination" bind:this={destination}>
+				<div class="video-container">
+					{#if videoSrc}
+						<video autoplay loop muted bind:this={videoElement}>
+							<track kind="captions" />
+							<source src={videoSrc} type="video/mp4" />
+						</video>
+					{/if}
+				</div>
 			</div>
-			<div class="fullscreen-button" in:fade={{ delay: 800, duration: 400 }}>
-				<p>Full-screen version</p>
-			</div>
+			{#if scrollY > 10}
+				<div class="chat-container">
+					<h2 style="opacity: 0.6;">Hi I'm Blobby</h2>
+					<h2>How can I help you?</h2>
+				</div>
+				<div class="fullscreen-button" in:fade={{ delay: 800, duration: 400 }}>
+					<p>Full-screen version</p>
+				</div>
+			{/if}
 		</div>
 
-		<div class="row-two">
-			{#each promptBoxes as box, i}
-				<div class="prompt-box" in:fade={{ delay: 500 * i, duration: 400 }}>
+		<div class="row-two" in:fade={{ delay: 1400, duration: 400 }}>
+			{#each promptBoxes as box}
+				<div class="prompt-box">
 					<p>{@html box.copy}</p>
 					<div class="box-image">
 						<img src={box.logo} alt="box logo" />
@@ -64,7 +110,7 @@
 			{/each}
 		</div>
 
-		<div class="row-three">
+		<div class="row-three" in:fade={{ delay: 1800, duration: 400 }}>
 			<input type="text" value="Send a message" class="chat-box-container" />
 			<div class="submit">
 				<img src={submit} alt="submit" />
@@ -80,7 +126,7 @@
 		// background: rgba(232, 206, 255, 0.05);
 		border-radius: uiscale(24);
 		&.bg {
-			animation: FadeIn 0.25s 2s ease-in-out forwards;
+			animation: FadeIn 0.95s ease-in-out forwards;
 		}
 
 		.chat-content {
@@ -97,10 +143,13 @@
 				.canvas-destination {
 					height: 100%;
 					width: uiscale(125);
-					img {
-						height: 100%;
-						width: 100%;
-						object-fit: contain;
+					video {
+						height: 160%;
+						width: 160%;
+						margin-top: -20%;
+						margin-left: -10%;
+						// object-fit: cover;
+						mix-blend-mode: screen;
 					}
 				}
 				.chat-container {

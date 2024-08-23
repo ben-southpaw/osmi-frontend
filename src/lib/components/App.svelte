@@ -2,41 +2,12 @@
 	import { fade, fly, scale } from 'svelte/transition';
 	import Chat from './Chat.svelte';
 	import Header from './Header.svelte';
-	import Nav from './Nav.svelte';
-	import gsap from 'gsap';
-	import videoDesktop from '$lib/assets/videos/desktop.mp4';
-	import videoMobile from '$lib/assets/videos/mobile.mp4';
 	import { onMount } from 'svelte';
-	import { coords } from '../store';
+	import Nav from './Nav.svelte';
 
-	let tl;
-	let videoSrc;
-	let videoElement;
 	let scrollY;
-	let canvasDestination;
-	let el;
-	$: scrollY, handleScroll();
 
-	onMount(() => {
-		videoSrc = videoDesktop;
-		tl = gsap.timeline();
-	});
-
-	function handleScroll() {
-		if (videoElement) {
-			if (scrollY > 0) {
-				tl.to(videoElement, {
-					yPercent: 80,
-					xPercent: -118,
-					scale: 0.34,
-					duration: 1,
-					ease: 'power4.inOut',
-				});
-			} else if (scrollY == 0) {
-				tl.reverse();
-			}
-		}
-	}
+	onMount(() => {});
 </script>
 
 <svelte:window bind:scrollY />
@@ -45,29 +16,7 @@
 	<Nav />
 	<div class="hero-container">
 		<Header />
-		{#if scrollY > 0}
-			<Chat {scrollY} />
-		{/if}
-	</div>
-
-	<div class="video-container">
-		{#if videoSrc}
-			<video
-				autoplay
-				loop
-				muted
-				bind:this={videoElement}
-				in:fly={{
-					y: '100%',
-					x: '-50%',
-					delay: 1550,
-					duration: 800,
-				}}
-			>
-				<track kind="captions" />
-				<source src={videoSrc} type="video/mp4" />
-			</video>
-		{/if}
+		<Chat {scrollY} />
 	</div>
 </div>
 
@@ -95,9 +44,9 @@
 		}
 		@media #{$breakpoint-xlarge} {
 			@include responsive-scale(
-				$screen-min: 0,
+				$screen-min: 1440,
 				$screen-max: 2500,
-				// $aspect-ratio: math.div(1680, 740)
+				$aspect-ratio: math.div(1500, 840)
 			);
 		}
 	}
@@ -108,15 +57,21 @@
 
 	.video-container {
 		position: absolute;
-		top: uiscale(80);
+		top: uiscale(-80);
 		right: uiscale(33);
 		width: uiscale(730);
-		height: uiscale(492);
+		height: uiscale(792);
+		@media #{$breakpoint-xlarge} {
+			top: uiscale(150);
+			right: uiscale(233);
+			width: uiscale(930);
+			height: uiscale(492);
+		}
 		video {
 			width: 100%;
 			height: 100%;
 			mix-blend-mode: screen;
-			object-fit: cover;
+			object-fit: contain;
 		}
 	}
 

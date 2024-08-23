@@ -4,6 +4,9 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [enhancedImages(), sveltekit()],
+	optimizeDeps: {
+		exclude: ['gsap'], // This tells Vite not to pre-bundle gsap
+	},
 
 	ssr: {
 		// noExternal: ['three', 'matter-js'],
