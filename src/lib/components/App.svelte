@@ -2,15 +2,23 @@
 	import { fade, fly, scale } from 'svelte/transition';
 	import Chat from './Chat.svelte';
 	import Header from './Header.svelte';
-	import { onMount } from 'svelte';
 	import Nav from './Nav.svelte';
+	import { isMobile } from '../store';
+	import { onMount } from 'svelte';
 
 	let scrollY;
 
-	onMount(() => {});
+	onMount(() => {
+		handleResizeHome();
+	});
+
+	function handleResizeHome() {
+		let mql = matchMedia('(max-width: 899px)');
+		$isMobile = mql.matches;
+	}
 </script>
 
-<svelte:window bind:scrollY />
+<svelte:window bind:scrollY on:resize={handleResizeHome} />
 
 <div class="main">
 	<Nav />
@@ -55,26 +63,6 @@
 		scroll-behavior: smooth;
 	}
 
-	.video-container {
-		position: absolute;
-		top: uiscale(-80);
-		right: uiscale(33);
-		width: uiscale(730);
-		height: uiscale(792);
-		@media #{$breakpoint-xlarge} {
-			top: uiscale(150);
-			right: uiscale(233);
-			width: uiscale(930);
-			height: uiscale(492);
-		}
-		video {
-			width: 100%;
-			height: 100%;
-			mix-blend-mode: screen;
-			object-fit: contain;
-		}
-	}
-
 	.main {
 		max-width: 100vw;
 		height: 100%;
@@ -83,15 +71,14 @@
 		pointer-events: all;
 		overflow: hidden;
 		padding: uiscale(12);
+		@media #{$breakpoint-small} {
+			padding: uiscale(12) 0;
+			width: 100vw;
+		}
 
 		:global(a) {
 			pointer-events: all;
 			text-decoration: none !important;
-		}
-		@media #{$breakpoint-small} {
-			height: 100vh;
-			max-height: 100vh;
-			position: fixed;
 		}
 
 		.hero-container {
@@ -100,12 +87,15 @@
 			border-radius: uiscale(36);
 			background: linear-gradient(
 				180deg,
-				rgba(255, 255, 255, 0.04) 0%,
-				rgba(125, 66, 236, 0.04) 100%
+				rgba(255, 255, 255, 0.1) 0%,
+				rgba(125, 66, 236, 0.29) 100%
 			);
 			display: flex;
 			flex-direction: column;
 			align-items: center;
+			@media #{$breakpoint-small} {
+				height: 100%;
+			}
 		}
 	}
 </style>

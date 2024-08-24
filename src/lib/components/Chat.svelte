@@ -9,6 +9,7 @@
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
 	import { inview } from 'svelte-inview';
+	import { isMobile } from '../store';
 
 	onMount(() => {
 		handleResize();
@@ -37,6 +38,7 @@
 	};
 
 	let videoX, videoY;
+	$: videoX, videoY;
 
 	function handleResize() {
 		let bounds = document.querySelector('.header p').getBoundingClientRect();
@@ -68,9 +70,9 @@
 		if (scrollDirection.vertical === 'down') {
 			gsap.to(videoElement, {
 				duration: 1,
-				scale: 4,
-				y: videoY,
-				x: videoX * 1.15,
+				scale: $isMobile ? 5 : 4,
+				y: $isMobile ? -window.innerHeight / 2.9 : videoY,
+				x: $isMobile ? window.innerWidth / 3 : videoX * 1.15,
 			});
 		}
 	}}
@@ -88,8 +90,8 @@
 					{/if}
 				</div>
 			</div>
-			{#if scrollY > 10}
-				<div class="chat-container">
+			{#if scrollY > 10 || $isMobile}
+				<div class="chat-box">
 					<h2 style="opacity: 0.6;">Hi I'm Blobby</h2>
 					<h2>How can I help you?</h2>
 				</div>
@@ -125,6 +127,12 @@
 		height: uiscale(697);
 		// background: rgba(232, 206, 255, 0.05);
 		border-radius: uiscale(24);
+		@media #{$breakpoint-small} {
+			width: 100%;
+			height: auto;
+			margin-top: 50vh;
+			min-height: 55vh;
+		}
 		&.bg {
 			animation: FadeIn 0.95s ease-in-out forwards;
 		}
@@ -135,14 +143,27 @@
 			width: calc(100% - uiscale(136));
 			display: flex;
 			flex-direction: column;
+			@media #{$breakpoint-small} {
+				width: auto;
+				margin: 0;
+				position: relative;
+			}
 			.row-one {
 				width: 100%;
 				margin-top: uiscale(68);
 				height: uiscale(120);
 				display: flex;
+				@media #{$breakpoint-small} {
+					margin-left: 8vw;
+					margin-top: 3.5vh;
+					margin-bottom: 1vh;
+				}
 				.canvas-destination {
 					height: 100%;
 					width: uiscale(125);
+					@media #{$breakpoint-small} {
+						width: uiscale(140);
+					}
 					video {
 						height: 160%;
 						width: 160%;
@@ -150,9 +171,13 @@
 						margin-left: -10%;
 						// object-fit: cover;
 						mix-blend-mode: screen;
+						@media #{$breakpoint-small} {
+							margin-top: -30%;
+							margin-left: -30%;
+						}
 					}
 				}
-				.chat-container {
+				.chat-box {
 					width: uiscale(437);
 					height: 100%;
 					margin-left: uiscale(24);
@@ -161,6 +186,7 @@
 					display: flex;
 					flex-direction: column;
 					justify-content: center;
+
 					h2 {
 						margin-left: uiscale(52);
 						font-size: uiscale(28);
@@ -186,6 +212,17 @@
 						line-height: uiscale(20);
 						color: rgba(255, 255, 255, 0.6);
 					}
+					@media #{$breakpoint-small} {
+						position: absolute;
+						bottom: -5vh;
+						transform: -50%;
+						left: 38%;
+						background: none;
+						p {
+							font-size: uiscale(22);
+							line-height: uiscale(20);
+						}
+					}
 				}
 			}
 
@@ -193,6 +230,11 @@
 				margin-top: uiscale(60);
 				display: flex;
 				justify-content: space-between;
+				@media #{$breakpoint-small} {
+					overflow-x: scroll;
+					width: auto;
+					padding: 0 8vw;
+				}
 				.prompt-box {
 					position: relative;
 					height: max(269px, uiscale(269));
@@ -201,6 +243,12 @@
 					margin-right: uiscale(20);
 					border-radius: uiscale(28);
 					background: rgba(255, 255, 255, 0.05);
+					@media #{$breakpoint-small} {
+						width: 50%;
+						min-width: 50vw;
+						height: uiscale(363);
+						margin-right: uiscale(40);
+					}
 					p {
 						opacity: 0.6;
 						font-weight: 400;
@@ -208,6 +256,12 @@
 						width: uiscale(183);
 						margin: uiscale(36);
 						margin-top: uiscale(44);
+						@media #{$breakpoint-small} {
+							font-size: uiscale(26);
+							line-height: uiscale(38);
+							width: uiscale(183);
+							width: 80%;
+						}
 					}
 
 					.box-image {
@@ -221,6 +275,12 @@
 						display: flex;
 						align-items: center;
 						justify-content: center;
+						@media #{$breakpoint-small} {
+							right: uiscale(44);
+							bottom: uiscale(44);
+							width: uiscale(74);
+							height: uiscale(74);
+						}
 
 						img {
 							height: 45%;
@@ -249,6 +309,12 @@
 					line-height: uiscale(24);
 					font-weight: 400;
 					padding-left: uiscale(40);
+					@media #{$breakpoint-small} {
+						width: 79vw;
+						height: 7vh;
+						margin-left: 8vw;
+						margin-right: 12vw;
+					}
 				}
 				.submit {
 					position: absolute;
@@ -256,6 +322,12 @@
 					top: 50%;
 					height: uiscale(40);
 					width: uiscale(40);
+					@media #{$breakpoint-small} {
+						right: 10vw;
+						top: calc(43%);
+						height: uiscale(65);
+						width: uiscale(65);
+					}
 					img {
 						height: 100%;
 						width: 100%;
