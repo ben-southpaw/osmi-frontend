@@ -71,7 +71,7 @@
 			gsap.to(videoElement, {
 				duration: 1,
 				scale: $isMobile ? 5 : 4,
-				y: $isMobile ? -window.innerHeight / 2.9 : videoY,
+				y: $isMobile ? -window.innerHeight / 2 : videoY,
 				x: $isMobile ? window.innerWidth / 3 : videoX * 1.15,
 			});
 		}
